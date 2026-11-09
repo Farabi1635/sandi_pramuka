@@ -1,1 +1,46 @@
+name: Build Sandi Pramuka
 
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Buat folder android jika belum ada
+        run: |
+          if [ ! -d android ]; then
+            flutter create --org com.sandipramuka --project-name sandi_pramuka --platforms android .
+            git checkout -- lib test pubspec.yaml README.md 2>/dev/null || true
+          fi
+
+      - run: flutter pub get
+
+      - name: Buat ikon launcher
+        run: dart run flutter_launcher_icons
+
+      - run: flutter analyze
+      - run: flutter test
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sandi-pramuka-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
