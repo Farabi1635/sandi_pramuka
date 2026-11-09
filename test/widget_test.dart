@@ -15,6 +15,8 @@ Future<void> _pumpApp(WidgetTester tester) async {
       child: const SandiPramukaApp(),
     ),
   );
+  // Tunggu splash screen (1,8 detik) selesai lalu pindah ke Beranda.
+  await tester.pump(const Duration(seconds: 2));
   await tester.pumpAndSettle();
 }
 
