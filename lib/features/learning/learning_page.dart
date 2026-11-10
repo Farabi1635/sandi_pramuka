@@ -47,7 +47,16 @@ class _LearningPageState extends ConsumerState<LearningPage> {
     final total = lessons.length;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Katalog Sandi')),
+      appBar: AppBar(
+        title: const Text('Katalog Sandi'),
+        actions: [
+          IconButton(
+            tooltip: 'Kamus Sandi',
+            icon: const Icon(Icons.manage_search),
+            onPressed: () => context.push('/dictionary'),
+          ),
+        ],
+      ),
       body: Column(
         children: [
           Padding(
