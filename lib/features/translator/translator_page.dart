@@ -23,7 +23,9 @@ class _HistoryItem {
 }
 
 class TranslatorPage extends StatefulWidget {
-  const TranslatorPage({super.key});
+  const TranslatorPage({super.key, this.initialCipherId});
+
+  final String? initialCipherId;
 
   @override
   State<TranslatorPage> createState() => _TranslatorPageState();
@@ -38,6 +40,29 @@ class _TranslatorPageState extends State<TranslatorPage> {
   int _shift = 3;
   TranslateMode _mode = TranslateMode.encode;
   TranslationResult? _result;
+
+  @override
+  void initState() {
+    super.initState();
+    _applyInitial();
+  }
+
+  @override
+  void didUpdateWidget(covariant TranslatorPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialCipherId != widget.initialCipherId) {
+      setState(_applyInitial);
+    }
+  }
+
+  void _applyInitial() {
+    final c = cipherById(widget.initialCipherId ?? '');
+    if (c != null) {
+      _cipher = c;
+      _variantId = _defaultVariant(c);
+      _result = null;
+    }
+  }
 
   @override
   void dispose() {
