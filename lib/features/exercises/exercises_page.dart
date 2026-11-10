@@ -69,6 +69,18 @@ class _ExercisesPageState extends ConsumerState<ExercisesPage> {
               onTap: () => context.go('/exercises/morse'),
             ),
           ),
+          const SizedBox(height: 8),
+          Card(
+            elevation: 0,
+            child: ListTile(
+              leading: const Icon(Icons.flag, size: 36),
+              title: const Text('Tantangan'),
+              subtitle: const Text(
+                  'Buat pesan rahasia, bagikan kode, dan kerjakan tantangan teman.'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push('/challenges'),
+            ),
+          ),
           const SizedBox(height: 20),
           Text('Kuis sandi', style: t.textTheme.titleMedium),
           const SizedBox(height: 4),
