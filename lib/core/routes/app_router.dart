@@ -39,7 +39,9 @@ final GoRouter appRouter = GoRouter(
         StatefulShellBranch(routes: [
           GoRoute(
             path: '/translator',
-            builder: (_, __) => const TranslatorPage(),
+            builder: (_, state) => TranslatorPage(
+              initialCipherId: state.uri.queryParameters['cipher'],
+            ),
           ),
         ]),
         StatefulShellBranch(routes: [
