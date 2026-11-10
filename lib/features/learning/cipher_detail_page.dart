@@ -6,6 +6,7 @@ import '../../core/constants/cipher_catalog_seed.dart';
 import '../../core/constants/cipher_lessons.dart';
 import '../../core/utils/progress_provider.dart';
 import '../../services/translation_service.dart';
+import '../../shared/widgets/braille_cell.dart';
 import '../../shared/widgets/cipher_logo.dart';
 import '../../shared/widgets/coming_soon_view.dart';
 import 'learning_page.dart';
@@ -120,7 +121,9 @@ class CipherDetailPage extends ConsumerWidget {
                           runSpacing: 8,
                           children: [
                             for (final e in symbolEntries(cipherId))
-                              _SymbolTile(top: e.key, bottom: e.value),
+                              cipherId == 'braille'
+                                  ? BrailleCell(letter: e.key, dots: e.value)
+                                  : _SymbolTile(top: e.key, bottom: e.value),
                           ],
                         ),
                       ]),
