@@ -1,3 +1,4 @@
+import '../../services/ciphers/braille_cipher.dart';
 import '../../services/ciphers/cipher.dart';
 import '../../services/ciphers/letter_ciphers.dart';
 import '../../services/ciphers/morse_cipher.dart';
@@ -62,6 +63,8 @@ List<MapEntry<String, String>> symbolEntries(String cipherId) {
       return [
         for (var i = 0; i < 26; i++) MapEntry(_letters[i], '${i + 1}'),
       ];
+    case 'braille':
+      return brailleDots.entries.toList();
     default:
       return const [];
   }
@@ -213,6 +216,33 @@ const Map<String, Lesson> lessons = {
     mistakes: [
       'Tidak memberi pemisah sehingga "1-2" terbaca "12".',
       'Salah menghitung huruf di atas J, misalnya Q menjadi 16 (yang benar 17).',
+    ],
+  ),
+  'braille': Lesson(
+    definition:
+        'Braille adalah tulisan timbul yang dipakai tunanetra. Setiap huruf '
+        'ditulis dalam satu sel berisi 6 titik yang disusun 2 kolom dan 3 baris.',
+    purpose: 'Melatih ketelitian membaca pola titik sekaligus mengenal '
+        'tulisan yang dipakai tunanetra.',
+    history:
+        'Dikembangkan oleh Louis Braille dari Prancis pada sekitar 1824 dan '
+        'kini dipakai di seluruh dunia.',
+    steps: [
+      'Titik pada sel diberi nomor: kolom kiri 1, 2, 3 (atas ke bawah), kolom kanan 4, 5, 6.',
+      'Tiap huruf adalah kombinasi titik yang timbul, misalnya A = titik 1 dan B = titik 1 dan 2.',
+      'Huruf A sampai J memakai titik 1, 2, 4, 5. Huruf K sampai T sama dengan A sampai J ditambah titik 3.',
+      'Huruf U, V, X, Y, Z sama dengan A sampai E ditambah titik 3 dan 6. Huruf W adalah pengecualian (titik 2, 4, 5, 6).',
+      'Saat menulis di sini, tulis nomor titik tiap huruf dengan spasi, dan pisahkan kata dengan tanda "/".',
+    ],
+    tableCaption: 'Gambar sel untuk tiap huruf (titik hitam = timbul) dan nomor titiknya.',
+    examples: [
+      LessonExample('SIAGA'),
+      LessonExample('PRAMUKA'),
+    ],
+    mistakes: [
+      'Tertukar kolom: titik 1-3 di kolom kiri, titik 4-6 di kolom kanan.',
+      'Menganggap W mengikuti pola U sampai Z, padahal W pengecualian.',
+      'Angka dan tanda baca memakai aturan tambahan dan belum didukung di aplikasi ini.',
     ],
   ),
   'kotak_koordinat': Lesson(
