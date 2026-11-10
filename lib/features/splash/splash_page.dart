@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../core/utils/settings_provider.dart';
 import '../../shared/widgets/app_logo.dart';
 
-class SplashPage extends StatefulWidget {
+class SplashPage extends ConsumerStatefulWidget {
   const SplashPage({super.key});
 
   @override
-  State<SplashPage> createState() => _SplashPageState();
+  ConsumerState<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage> {
+class _SplashPageState extends ConsumerState<SplashPage> {
   @override
   void initState() {
     super.initState();
     Future<void>.delayed(const Duration(milliseconds: 1800), () {
-      if (mounted) context.go('/home');
+      if (!mounted) return;
+      final done =
+          ref.read(sharedPrefsProvider).getBool('onboarding_done') ?? false;
+      context.go(done ? '/home' : '/onboarding');
     });
   }
 
