@@ -1,39 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../core/utils/translation_history_provider.dart';
 import '../../services/ciphers/cipher.dart';
 import '../../services/translation_service.dart';
 import '../../shared/widgets/cipher_logo.dart';
 
-class _HistoryItem {
-  const _HistoryItem({
-    required this.cipherId,
-    required this.variantId,
-    required this.shift,
-    required this.mode,
-    required this.input,
-    required this.output,
-  });
-  final String cipherId;
-  final String? variantId;
-  final int shift;
-  final TranslateMode mode;
-  final String input;
-  final String output;
-}
-
-class TranslatorPage extends StatefulWidget {
+class TranslatorPage extends ConsumerStatefulWidget {
   const TranslatorPage({super.key, this.initialCipherId});
 
   final String? initialCipherId;
 
   @override
-  State<TranslatorPage> createState() => _TranslatorPageState();
+  ConsumerState<TranslatorPage> createState() => _TranslatorPageState();
 }
 
-class _TranslatorPageState extends State<TranslatorPage> {
+class _TranslatorPageState extends ConsumerState<TranslatorPage> {
   final TextEditingController _controller = TextEditingController();
-  final List<_HistoryItem> _history = [];
 
   Cipher _cipher = translatableCiphers.first;
   String? _variantId;
@@ -87,23 +72,20 @@ class _TranslatorPageState extends State<TranslatorPage> {
     final res = _mode == TranslateMode.encode
         ? _cipher.encode(text, options)
         : _cipher.decode(text, options);
-    setState(() {
-      _result = res;
-      if (res.ok) {
-        _history.insert(
-          0,
-          _HistoryItem(
-            cipherId: _cipher.id,
-            variantId: _variantId,
-            shift: _shift,
-            mode: _mode,
-            input: text,
-            output: res.output,
-          ),
-        );
-        if (_history.length > 10) _history.removeLast();
-      }
-    });
+    setState(() => _result = res);
+    if (res.ok) {
+      ref.read(translationHistoryProvider.notifier).add(
+            TranslationRecord(
+              cipherId: _cipher.id,
+              variantId: _variantId,
+              shift: _shift,
+              mode: _mode.name,
+              input: text,
+              output: res.output,
+              at: DateTime.now().millisecondsSinceEpoch,
+            ),
+          );
+    }
   }
 
   void _swap() {
@@ -135,14 +117,15 @@ class _TranslatorPageState extends State<TranslatorPage> {
     );
   }
 
-  void _restore(_HistoryItem item) {
+  void _restore(TranslationRecord item) {
     final c = cipherById(item.cipherId);
     if (c == null) return;
     setState(() {
       _cipher = c;
       _variantId = item.variantId;
       _shift = item.shift;
-      _mode = item.mode;
+      _mode =
+          item.mode == 'decode' ? TranslateMode.decode : TranslateMode.encode;
       _controller.text = item.input;
       _result = null;
     });
@@ -158,9 +141,19 @@ class _TranslatorPageState extends State<TranslatorPage> {
       if (v.id == _variantId) activeVariant = v;
     }
     final res = _result;
+    final history = ref.watch(translationHistoryProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Penerjemah Sandi')),
+      appBar: AppBar(
+        title: const Text('Penerjemah Sandi'),
+        actions: [
+          IconButton(
+            tooltip: 'Riwayat',
+            icon: const Icon(Icons.history),
+            onPressed: () => context.push('/history'),
+          ),
+        ],
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -332,11 +325,21 @@ class _TranslatorPageState extends State<TranslatorPage> {
               ),
             ),
           ],
-          if (_history.isNotEmpty) ...[
+          if (history.isNotEmpty) ...[
             const SizedBox(height: 20),
-            Text('Riwayat sesi ini', style: t.textTheme.titleMedium),
-            const SizedBox(height: 4),
-            for (final h in _history)
+            Row(
+              children: [
+                Expanded(
+                  child: Text('Riwayat terakhir',
+                      style: t.textTheme.titleMedium),
+                ),
+                TextButton(
+                  onPressed: () => context.push('/history'),
+                  child: const Text('Lihat semua'),
+                ),
+              ],
+            ),
+            for (final h in history.take(5))
               Card(
                 elevation: 0,
                 child: ListTile(
@@ -345,15 +348,11 @@ class _TranslatorPageState extends State<TranslatorPage> {
                       maxLines: 1, overflow: TextOverflow.ellipsis),
                   subtitle: Text(
                     '${cipherById(h.cipherId)?.name ?? ''} - '
-                    '${h.mode == TranslateMode.encode ? 'Teks ke Sandi' : 'Sandi ke Teks'}',
+                    '${h.mode == 'decode' ? 'Sandi ke Teks' : 'Teks ke Sandi'}',
                   ),
                   onTap: () => _restore(h),
                 ),
               ),
-            const Text(
-              'Riwayat permanen tersimpan di Tahap 5.',
-              style: TextStyle(fontSize: 12),
-            ),
           ],
           const SizedBox(height: 24),
         ],
