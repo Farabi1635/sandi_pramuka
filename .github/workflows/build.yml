@@ -29,6 +29,11 @@ jobs:
             git checkout -- lib test pubspec.yaml README.md 2>/dev/null || true
           fi
 
+      - name: Atur nama aplikasi
+        run: |
+          sed -i 's/android:label="[^"]*"/android:label="Sandi Pramuka"/' android/app/src/main/AndroidManifest.xml
+          grep -n 'android:label' android/app/src/main/AndroidManifest.xml
+
       - run: flutter pub get
 
       - name: Buat ikon launcher
