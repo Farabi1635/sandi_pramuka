@@ -3,6 +3,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/dashboard/dashboard_page.dart';
 import '../../features/exercises/exercises_page.dart';
+import '../../features/exercises/quiz_engine.dart';
+import '../../features/exercises/quiz_page.dart';
+import '../../features/morse/morse_page.dart';
 import '../../features/learning/cipher_detail_page.dart';
 import '../../features/learning/learning_page.dart';
 import '../../features/profile/profile_page.dart';
@@ -48,6 +51,26 @@ final GoRouter appRouter = GoRouter(
           GoRoute(
             path: '/exercises',
             builder: (_, __) => const ExercisesPage(),
+            routes: [
+              GoRoute(
+                path: 'quiz',
+                builder: (_, state) {
+                  final q = state.uri.queryParameters;
+                  return QuizPage(
+                    cipherId: q['cipher'] ?? 'morse',
+                    level: QuizLevel.values.firstWhere(
+                      (l) => l.name == q['level'],
+                      orElse: () => QuizLevel.pemula,
+                    ),
+                    count: (int.tryParse(q['count'] ?? '') ?? 5).clamp(3, 10),
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'morse',
+                builder: (_, __) => const MorsePage(),
+              ),
+            ],
           ),
         ]),
         StatefulShellBranch(routes: [
