@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/constants/cipher_catalog_seed.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/utils/achievements.dart';
 import '../../shared/widgets/app_logo.dart';
 import '../../shared/widgets/cipher_logo.dart';
 import '../../shared/widgets/stat_tile.dart';
+import 'daily_challenge_card.dart';
 
-class DashboardPage extends StatelessWidget {
+class DashboardPage extends ConsumerWidget {
   const DashboardPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final t = Theme.of(context);
+    final stats = ref.watch(achievementStatsProvider);
+    final percent = (stats.lessonProgress * 100).round();
+
     return Scaffold(
       appBar: AppBar(
         title: const Row(children: [
@@ -21,6 +26,11 @@ class DashboardPage extends StatelessWidget {
           Text('Sandi Pramuka'),
         ]),
         actions: [
+          IconButton(
+            tooltip: 'Riwayat',
+            icon: const Icon(Icons.history),
+            onPressed: () => context.push('/history'),
+          ),
           IconButton(
             tooltip: 'Pengaturan',
             icon: const Icon(Icons.settings_outlined),
@@ -39,7 +49,7 @@ class DashboardPage extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: Chip(
               avatar: Icon(Icons.cloud_off, size: 18),
-              label: Text('Mode offline (sinkronisasi: Tahap 6)'),
+              label: Text('Offline-first: materi tersedia tanpa internet'),
             ),
           ),
           const SizedBox(height: 12),
@@ -56,8 +66,18 @@ class DashboardPage extends StatelessWidget {
                           fontSize: 20,
                           fontWeight: FontWeight.bold)),
                   const SizedBox(height: 6),
-                  const Text('Jelajahi katalog sandi Pramuka.',
-                      style: TextStyle(color: AppColors.cream)),
+                  Text(
+                    'Progres: ${stats.completedLessons} dari ${stats.totalLessons} materi ($percent%)',
+                    style: const TextStyle(color: AppColors.cream),
+                  ),
+                  const SizedBox(height: 8),
+                  LinearProgressIndicator(
+                    value: stats.lessonProgress,
+                    minHeight: 6,
+                    borderRadius: BorderRadius.circular(3),
+                    color: AppColors.cream,
+                    backgroundColor: AppColors.greenDark,
+                  ),
                   const SizedBox(height: 14),
                   FilledButton(
                     style: FilledButton.styleFrom(
@@ -82,14 +102,24 @@ class DashboardPage extends StatelessWidget {
             children: [
               StatTile(
                   icon: Icons.menu_book,
-                  value: '$totalCipherCount',
-                  label: 'Jenis sandi'),
+                  value: '${stats.completedLessons}/${stats.totalLessons}',
+                  label: 'Materi selesai'),
               StatTile(
-                  icon: Icons.category,
-                  value: '${cipherCategories.length}',
-                  label: 'Kategori'),
+                  icon: Icons.quiz,
+                  value: '${stats.quizCount}',
+                  label: 'Kuis dikerjakan'),
+              StatTile(
+                  icon: Icons.translate,
+                  value: '${stats.translationCount}',
+                  label: 'Terjemahan'),
+              StatTile(
+                  icon: Icons.emoji_events,
+                  value: '${stats.bestScore}',
+                  label: 'Nilai terbaik'),
             ],
           ),
+          const SizedBox(height: 16),
+          const DailyChallengeCard(),
           const SizedBox(height: 16),
           Text('Sandi populer', style: t.textTheme.titleMedium),
           const SizedBox(height: 10),
@@ -138,6 +168,7 @@ class DashboardPage extends StatelessWidget {
               ),
             ],
           ),
+          const SizedBox(height: 16),
         ],
       ),
     );
