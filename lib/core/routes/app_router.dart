@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/dashboard/dashboard_page.dart';
+import '../../features/dictionary/dictionary_page.dart';
 import '../../features/exercises/exercises_page.dart';
+import '../../features/history/history_page.dart';
 import '../../features/exercises/quiz_engine.dart';
 import '../../features/exercises/quiz_page.dart';
-import '../../features/history/history_page.dart';
+import '../../features/morse/morse_page.dart';
+import '../../features/onboarding/onboarding_page.dart';
 import '../../features/learning/cipher_detail_page.dart';
 import '../../features/learning/learning_page.dart';
-import '../../features/morse/morse_page.dart';
 import '../../features/profile/profile_page.dart';
 import '../../features/settings/settings_page.dart';
 import '../../features/splash/splash_page.dart';
@@ -85,6 +87,14 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/splash',
       builder: (_, __) => const SplashPage(),
+    ),
+    GoRoute(
+      path: '/onboarding',
+      builder: (_, __) => const OnboardingPage(),
+    ),
+    GoRoute(
+      path: '/dictionary',
+      builder: (_, __) => const DictionaryPage(),
     ),
     GoRoute(
       path: '/history',
