@@ -1,10 +1,11 @@
+import 'ciphers/braille_cipher.dart';
 import 'ciphers/cipher.dart';
 import 'ciphers/letter_ciphers.dart';
 import 'ciphers/morse_cipher.dart';
 import 'ciphers/number_ciphers.dart';
 
 /// Daftar sandi yang sudah punya mesin penerjemah.
-/// Sandi bergambar (Semaphore, Kotak 1-3, Rumput, dll.) menyusul di tahap berikutnya.
+/// Sandi bergambar lain (Semaphore, Kotak 1-3, Rumput, dll.) menyusul.
 const List<Cipher> translatableCiphers = [
   MorseCipher(),
   AnCipher(),
@@ -13,6 +14,7 @@ const List<Cipher> translatableCiphers = [
   GeserCipher(),
   AngkaCipher(),
   KotakKoordinatCipher(),
+  BrailleCipher(),
 ];
 
 Cipher? cipherById(String id) {
