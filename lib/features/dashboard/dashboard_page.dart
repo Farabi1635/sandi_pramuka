@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/achievements.dart';
+import '../../core/utils/user_profile_provider.dart';
 import '../../shared/widgets/app_logo.dart';
 import '../../shared/widgets/cipher_logo.dart';
 import '../../shared/widgets/stat_tile.dart';
@@ -16,6 +17,7 @@ class DashboardPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final t = Theme.of(context);
     final stats = ref.watch(achievementStatsProvider);
+    final profile = ref.watch(userProfileProvider);
     final percent = (stats.lessonProgress * 100).round();
 
     return Scaffold(
@@ -42,6 +44,14 @@ class DashboardPage extends ConsumerWidget {
         padding: const EdgeInsets.all(16),
         children: [
           Text('Salam Pramuka!', style: t.textTheme.headlineSmall),
+          if (profile.hasName || profile.level != null)
+            Text(
+              [
+                if (profile.hasName) profile.name,
+                if (profile.level != null) scoutLevelLabel(profile.level!),
+              ].join(' - '),
+              style: t.textTheme.titleSmall,
+            ),
           const SizedBox(height: 4),
           const Text('Belajar Sandi, Pecahkan Rahasia, Kuasai Pramuka.'),
           const SizedBox(height: 12),
