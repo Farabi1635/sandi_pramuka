@@ -39,6 +39,7 @@ class SettingsPage extends ConsumerWidget {
       'quiz_results',
       'translation_history',
       'daily_done',
+      'certificate_date',
     ]) {
       await prefs.remove(key);
     }
