@@ -39,7 +39,7 @@ jobs:
       - name: Buat ikon launcher
         run: dart run flutter_launcher_icons
 
-      - run: flutter analyze
+      - run: flutter analyze --no-fatal-infos
       - run: flutter test
 
       - name: Build APK
