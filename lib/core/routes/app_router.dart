@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/certificate/certificate_page.dart';
 import '../../features/challenges/challenges_page.dart';
 import '../../features/dashboard/dashboard_page.dart';
 import '../../features/dictionary/dictionary_page.dart';
@@ -96,6 +97,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/dictionary',
       builder: (_, __) => const DictionaryPage(),
+    ),
+    GoRoute(
+      path: '/certificate',
+      builder: (_, __) => const CertificatePage(),
     ),
     GoRoute(
       path: '/challenges',
