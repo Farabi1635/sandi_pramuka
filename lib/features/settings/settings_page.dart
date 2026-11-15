@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/utils/progress_provider.dart';
 import '../../core/utils/quiz_history_provider.dart';
@@ -90,6 +91,12 @@ class SettingsPage extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           const Divider(),
+          ListTile(
+            leading: const Icon(Icons.backup),
+            title: const Text('Cadangkan dan pulihkan data'),
+            subtitle: const Text('Pindahkan data ke HP lain lewat kode'),
+            onTap: () => context.push('/backup'),
+          ),
           ListTile(
             leading: const Icon(Icons.delete_forever),
             title: const Text('Hapus data lokal'),
