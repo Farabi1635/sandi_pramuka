@@ -1,7 +1,9 @@
 import '../../services/ciphers/braille_cipher.dart';
 import '../../services/ciphers/cipher.dart';
+import '../../services/ciphers/jam_cipher.dart';
 import '../../services/ciphers/letter_ciphers.dart';
 import '../../services/ciphers/morse_cipher.dart';
+import '../../services/ciphers/semaphore_cipher.dart';
 
 /// Susunan kotak 5x5 untuk Sandi Kotak Koordinat (I = J).
 const String kotakGrid = 'ABCDEFGHIKLMNOPQRSTUVWXYZ';
@@ -65,6 +67,12 @@ List<MapEntry<String, String>> symbolEntries(String cipherId) {
       ];
     case 'braille':
       return brailleDots.entries.toList();
+    case 'semaphore':
+      return semaphoreCodes.entries.toList();
+    case 'jam':
+      return [
+        for (var i = 0; i < 26; i++) MapEntry(_letters[i], jamTimeOf(i)),
+      ];
     default:
       return const [];
   }
@@ -243,6 +251,55 @@ const Map<String, Lesson> lessons = {
       'Tertukar kolom: titik 1-3 di kolom kiri, titik 4-6 di kolom kanan.',
       'Menganggap W mengikuti pola U sampai Z, padahal W pengecualian.',
       'Angka dan tanda baca memakai aturan tambahan dan belum didukung di aplikasi ini.',
+    ],
+  ),
+  'semaphore': Lesson(
+    definition:
+        'Sandi Semaphore menyampaikan huruf lewat posisi dua lengan (atau dua '
+        'bendera). Ada 8 posisi di sekeliling tubuh yang dinomori 1 sampai 8, '
+        'dan setiap huruf adalah sepasang posisi.',
+    purpose: 'Dipakai untuk berkomunikasi jarak pandang tanpa suara memakai '
+        'bendera. Tanda khusus pada bagan (ANGKA, SALAH, SIAP, SELESAI, '
+        'U-R/PERHATIAN) belum didukung di aplikasi ini.',
+    steps: [
+      'Nomor posisi seperti pada gambar: 1 bawah, 2 kiri bawah, 3 kiri, 4 kiri atas, 5 atas, 6 kanan atas, 7 kanan, 8 kanan bawah.',
+      'Tiap huruf adalah pasangan dua nomor, misalnya A = 1.2 (satu lengan ke bawah, satu lengan ke kiri bawah).',
+      'Urutan nomor dalam pasangan tidak berpengaruh (1.2 sama dengan 2.1) karena kedua lengan bisa bertukar.',
+      'Rumus mudah dihafal: 1.2 sampai 1.8 = A sampai G. 2.3 sampai 2.8 = H, I, K, L, M, N. 3.4 sampai 3.8 = O, P, Q, R, S.',
+      'Sisanya: 4.5 = T, 4.6 = U, 4.7 = Y, 5.7 = J, 5.8 = V, 6.7 = W, 6.8 = X, 7.8 = Z.',
+    ],
+    tableCaption: 'Gambar posisi lengan (dilihat dari depan) dan pasangan nomornya.',
+    examples: [
+      LessonExample('SIAGA'),
+      LessonExample('PRAMUKA'),
+    ],
+    mistakes: [
+      'Tertukar kiri dan kanan: nomor 2, 3, 4 ada di sisi kiri gambar.',
+      'Mengira J mengikuti urutan abjad. J = 5.7, bukan 2.x.',
+      'Lupa bahwa Y = 4.7 dan J = 5.7 adalah pengecualian dari pola berurutan.',
+    ],
+  ),
+  'jam': Lesson(
+    definition:
+        'Sandi Jam mengganti setiap huruf dengan sebuah waktu. A = 03.00, lalu '
+        'setiap huruf berikutnya bertambah 5 menit.',
+    purpose: 'Latihan sandi pengganti huruf yang memakai pola hitungan.',
+    steps: [
+      'Huruf A dimulai pada pukul 03.00.',
+      'Tiap huruf berikutnya bertambah 5 menit: B = 03.05, C = 03.10, D = 03.15, dan seterusnya.',
+      'Setelah 03.55 jamnya naik: M = 04.00, N = 04.05.',
+      'Huruf terakhir Z = 05.05.',
+      'Saat menulis, pisahkan huruf dengan spasi dan kata dengan tanda "/".',
+    ],
+    tableCaption: 'Huruf dan waktunya.',
+    examples: [
+      LessonExample('SIAGA'),
+      LessonExample('PRAMUKA'),
+    ],
+    mistakes: [
+      'Menulis 03.60, padahal setelah 03.55 jamnya naik menjadi 04.00.',
+      'Salah menghitung huruf M: M = 04.00, bukan 03.60.',
+      'Memakai jam di luar 03.00 sampai 05.05, karena sandi ini hanya memakai rentang itu.',
     ],
   ),
   'kotak_koordinat': Lesson(
