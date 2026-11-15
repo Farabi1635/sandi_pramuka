@@ -8,6 +8,7 @@ import '../../core/utils/progress_provider.dart';
 import '../../services/translation_service.dart';
 import '../../shared/widgets/braille_cell.dart';
 import '../../shared/widgets/cipher_logo.dart';
+import '../../shared/widgets/semaphore_cell.dart';
 import '../../shared/widgets/coming_soon_view.dart';
 import 'learning_page.dart';
 
@@ -123,7 +124,11 @@ class CipherDetailPage extends ConsumerWidget {
                             for (final e in symbolEntries(cipherId))
                               cipherId == 'braille'
                                   ? BrailleCell(letter: e.key, dots: e.value)
-                                  : _SymbolTile(top: e.key, bottom: e.value),
+                                  : cipherId == 'semaphore'
+                                      ? SemaphoreCell(
+                                          letter: e.key, code: e.value)
+                                      : _SymbolTile(
+                                          top: e.key, bottom: e.value),
                           ],
                         ),
                       ]),
