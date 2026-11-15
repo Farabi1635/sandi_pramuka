@@ -70,10 +70,14 @@ class JamCipher extends Cipher {
         final m = RegExp(r'^(\d{1,2})[.:](\d{2})$').firstMatch(token);
         var letter = '';
         if (m != null) {
-          final minutes =
-              int.parse(m.group(1)!) * 60 + int.parse(m.group(2)!) - 180;
-          if (minutes >= 0 && minutes % 5 == 0 && minutes ~/ 5 < 26) {
-            letter = _alphabet[minutes ~/ 5];
+          final hour = int.parse(m.group(1)!);
+          final minute = int.parse(m.group(2)!);
+          // Menit harus 00-59, jadi "03.60" bukan waktu yang valid.
+          if (minute < 60) {
+            final minutes = hour * 60 + minute - 180;
+            if (minutes >= 0 && minutes % 5 == 0 && minutes ~/ 5 < 26) {
+              letter = _alphabet[minutes ~/ 5];
+            }
           }
         }
         if (letter.isEmpty) {
