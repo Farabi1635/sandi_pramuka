@@ -21,6 +21,8 @@ const Set<String> codeCipherIds = {
   'angka',
   'kotak_koordinat',
   'braille',
+  'semaphore',
+  'jam',
 };
 
 /// Sandi pengganti huruf (karakter selain A-Z dibiarkan apa adanya).
