@@ -23,6 +23,8 @@ const Set<String> codeCipherIds = {
   'braille',
   'semaphore',
   'jam',
+  'kimia',
+  'rumput',
 };
 
 /// Sandi pengganti huruf (karakter selain A-Z dibiarkan apa adanya).
