@@ -7,6 +7,7 @@ import '../../core/utils/translation_history_provider.dart';
 import '../../services/ciphers/cipher.dart';
 import '../../services/translation_service.dart';
 import '../../shared/widgets/cipher_logo.dart';
+import '../../shared/widgets/symbol_preview.dart';
 
 class TranslatorPage extends ConsumerStatefulWidget {
   const TranslatorPage({super.key, this.initialCipherId});
@@ -323,6 +324,15 @@ class _TranslatorPageState extends ConsumerState<TranslatorPage> {
                         ],
                       ),
               ),
+            ),
+          ],
+          if (res != null && res.ok && visualCipherIds.contains(_cipher.id)) ...[
+            const SizedBox(height: 12),
+            Text('Tampilan simbol', style: t.textTheme.titleSmall),
+            const SizedBox(height: 8),
+            SymbolPreview(
+              cipherId: _cipher.id,
+              plainText: isEncode ? _controller.text : res.output,
             ),
           ],
           if (history.isNotEmpty) ...[
