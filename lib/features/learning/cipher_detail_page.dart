@@ -6,10 +6,10 @@ import '../../core/constants/cipher_catalog_seed.dart';
 import '../../core/constants/cipher_lessons.dart';
 import '../../core/utils/progress_provider.dart';
 import '../../services/translation_service.dart';
-import '../../shared/widgets/braille_cell.dart';
 import '../../shared/widgets/cipher_logo.dart';
-import '../../shared/widgets/semaphore_cell.dart';
+import '../../shared/widgets/cipher_symbol.dart';
 import '../../shared/widgets/coming_soon_view.dart';
+import '../../shared/widgets/sungai_grid.dart';
 import 'learning_page.dart';
 
 class CipherDetailPage extends ConsumerWidget {
@@ -117,18 +117,16 @@ class CipherDetailPage extends ConsumerWidget {
                             child: Text(lesson.tableCaption!,
                                 style: t.textTheme.bodySmall),
                           ),
+                        if (cipherId == 'sungai') ...[
+                          const SungaiGrid(),
+                          const SizedBox(height: 12),
+                        ],
                         Wrap(
                           spacing: 8,
                           runSpacing: 8,
                           children: [
                             for (final e in symbolEntries(cipherId))
-                              cipherId == 'braille'
-                                  ? BrailleCell(letter: e.key, dots: e.value)
-                                  : cipherId == 'semaphore'
-                                      ? SemaphoreCell(
-                                          letter: e.key, code: e.value)
-                                      : _SymbolTile(
-                                          top: e.key, bottom: e.value),
+                              cipherSymbolWidget(cipherId, e),
                           ],
                         ),
                       ]),
@@ -188,36 +186,6 @@ class _Section extends StatelessWidget {
           Text(title, style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
           ...children,
-        ],
-      ),
-    );
-  }
-}
-
-class _SymbolTile extends StatelessWidget {
-  const _SymbolTile({required this.top, required this.bottom});
-  final String top;
-  final String bottom;
-
-  @override
-  Widget build(BuildContext context) {
-    final t = Theme.of(context);
-    return Container(
-      constraints: const BoxConstraints(minWidth: 64),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: t.colorScheme.primary.withAlpha(22),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(top,
-              style: t.textTheme.titleMedium
-                  ?.copyWith(fontWeight: FontWeight.bold)),
-          const SizedBox(height: 2),
-          Text(bottom,
-              style: const TextStyle(fontFamily: 'monospace', fontSize: 14)),
         ],
       ),
     );
