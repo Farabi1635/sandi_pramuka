@@ -25,6 +25,9 @@ const Set<String> codeCipherIds = {
   'jam',
   'kimia',
   'rumput',
+  'koordinat',
+  'kotak1',
+  'kotak2',
 };
 
 /// Sandi pengganti huruf (karakter selain A-Z dibiarkan apa adanya).
