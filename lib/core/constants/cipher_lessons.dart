@@ -2,6 +2,8 @@ import '../../services/ciphers/braille_cipher.dart';
 import '../../services/ciphers/cipher.dart';
 import '../../services/ciphers/jam_cipher.dart';
 import '../../services/ciphers/kimia_cipher.dart';
+import '../../services/ciphers/koordinat_cipher.dart';
+import '../../services/ciphers/kotak_cipher.dart';
 import '../../services/ciphers/letter_ciphers.dart';
 import '../../services/ciphers/morse_cipher.dart';
 import '../../services/ciphers/rumput_cipher.dart';
@@ -84,6 +86,21 @@ List<MapEntry<String, String>> symbolEntries(String cipherId) {
       return [
         for (var i = 0; i < 26; i++)
           MapEntry(_letters[i], sungaiPairs[_letters[i]]!),
+      ];
+    case 'koordinat':
+      return [
+        for (final ch in koordinatGrid.split(''))
+          MapEntry(ch, koordinatCode(ch, koordinatMerahPutih)!),
+      ];
+    case 'kotak1':
+      return [
+        for (var i = 0; i < 26; i++)
+          MapEntry(_letters[i], kotak1Codes[_letters[i]]!),
+      ];
+    case 'kotak2':
+      return [
+        for (var i = 0; i < 26; i++)
+          MapEntry(_letters[i], kotak2Codes[_letters[i]]!),
       ];
     default:
       return const [];
@@ -386,6 +403,83 @@ const Map<String, Lesson> lessons = {
       'Salah arah mengelilingi kotak sehingga urutan huruf tertukar.',
       'Lupa melewati huruf yang sudah dipakai pada kata SUNGAI.',
       'Menarik pasangan dari huruf di sisi yang sama, padahal harus dari sisi seberang.',
+    ],
+  ),
+  'koordinat': Lesson(
+    definition:
+        'Sandi Koordinat memakai tabel 5 x 5 berisi huruf A sampai Y. Kolom '
+        'diberi nama dari huruf kata MERAH dan baris dari huruf kata PUTIH. '
+        'Setiap huruf ditulis sebagai dua huruf: huruf kolom lalu huruf baris.',
+    purpose: 'Latihan membaca koordinat. Namanya berbeda di tiap daerah; yang '
+        'umum dikenal adalah sandi MERAH PUTIH dan GUDEP SEDIA.',
+    steps: [
+      'Susun huruf A sampai Y dalam kotak 5 x 5, baris demi baris. Huruf Z tidak ada di tabel.',
+      'Beri nama kolom dengan huruf kata MERAH dari kiri ke kanan, dan nama baris dengan huruf kata PUTIH dari atas ke bawah.',
+      'Cari hurufnya, tarik ke atas untuk nama kolom dan ke samping untuk nama baris. Contoh: R ada di kolom R dan baris I, jadi kodenya RI.',
+      'Tulis kode tiap huruf dengan spasi dan kata dengan tanda "/". Contoh: PRAMUKA = MI RI MP RT MH MT MP.',
+      'Varian GUDEP SEDIA memakai pola yang sama dengan kolom GUDEP dan baris SEDIA. Sepakati dulu dengan regumu.',
+    ],
+    tableCaption: 'Tabel MERAH PUTIH (kolom MERAH, baris PUTIH) dan kode tiap huruf. Huruf Z tidak ada.',
+    examples: [
+      LessonExample('PRAMUKA'),
+      LessonExample('PRAMUKA ITU ASIK'),
+      LessonExample('PRAMUKA',
+          options: CipherOptions(variantId: koordinatGudepSedia),
+          label: 'Varian GUDEP SEDIA'),
+    ],
+    mistakes: [
+      'Tertukar urutan: huruf kolom (atas) dulu, baru huruf baris (samping).',
+      'Mencari huruf Z, padahal tabel hanya berisi A sampai Y.',
+      'Mencampur kata kunci MERAH PUTIH dengan GUDEP SEDIA dalam satu pesan.',
+    ],
+  ),
+  'kotak1': Lesson(
+    definition:
+        'Sandi Kotak 1 memakai dua bentuk: tanda pagar (#) dan tanda silang '
+        '(X). Setiap huruf diganti garis yang mengelilingi ruangnya, dan huruf '
+        'kedua di tiap pasangan diberi sebuah titik.',
+    purpose: 'Latihan sandi bergambar yang mengenalkan pola bentuk dan titik.',
+    steps: [
+      'Gambar tanda pagar (#) dengan 9 ruang, lalu isi pasangan huruf: AB, CD, EF / GH, IJ, KL / MN, OP, QR.',
+      'Gambar tanda silang (X) dengan 4 ruang: atas UV, kiri ST, kanan WX, bawah YZ.',
+      'Huruf pertama dalam pasangan diganti garis yang mengelilingi ruangnya. Huruf kedua memakai garis yang sama dengan sebuah titik di dalamnya.',
+      'Contoh: A = garis kanan dan bawah dari ruang pertama. B = bentuk yang sama dengan satu titik.',
+      'Saat menulis dengan huruf: ruang # bernomor K1 sampai K9 dan ruang X bernomor X1 (atas), X2 (kiri), X3 (kanan), X4 (bawah). Titik ditulis "." di belakang, misalnya B = K1. dan V = X1.',
+    ],
+    tableCaption: 'Gambar simbol tiap huruf dan kodenya (titik hitam di dalam simbol = tanda titik).',
+    examples: [
+      LessonExample('SIAGA'),
+      LessonExample('PRAMUKA'),
+    ],
+    mistakes: [
+      'Lupa menambahkan titik pada huruf kedua dalam pasangan.',
+      'Tertukar ruang tanda silang: UV atas, ST kiri, WX kanan, YZ bawah.',
+      'Pada gambar bahan materi, simbol G tampak sama dengan C. Mengikuti aturan bentuknya, G seharusnya terbuka di sebelah kiri, dan itu yang dipakai di aplikasi ini.',
+    ],
+  ),
+  'kotak2': Lesson(
+    definition:
+        'Sandi Kotak 2 memakai tanda pagar (#) dengan 9 ruang, tiap ruang '
+        'berisi tiga huruf (ruang terakhir dua huruf). Huruf diganti garis '
+        'yang mengelilingi ruangnya, dan jumlah titik menunjukkan urutan '
+        'hurufnya.',
+    purpose: 'Latihan sandi bergambar dengan tiga huruf di tiap ruang.',
+    steps: [
+      'Gambar tanda pagar (#) dengan 9 ruang, lalu isi: ABC, DEF, GHI / JKL, MNO, PQR / STU, VWX, YZ.',
+      'Huruf pertama di ruang diganti garis yang mengelilingi ruangnya tanpa titik.',
+      'Huruf kedua memakai garis yang sama dengan satu titik, dan huruf ketiga dengan dua titik.',
+      'Contoh: A = garis kanan dan bawah ruang pertama, B = bentuk itu dengan satu titik, C = bentuk itu dengan dua titik.',
+      'Saat menulis dengan huruf: ruang bernomor K1 sampai K9 dan titik ditulis "." di belakang, misalnya A = K1, B = K1., C = K1..',
+    ],
+    tableCaption: 'Gambar simbol tiap huruf dan kodenya (jumlah titik menunjukkan urutan huruf dalam ruang).',
+    examples: [
+      LessonExample('SIAGA'),
+      LessonExample('PRAMUKA'),
+    ],
+    mistakes: [
+      'Salah menghitung titik: huruf pertama 0 titik, kedua 1 titik, ketiga 2 titik.',
+      'Menambahkan titik kedua pada ruang terakhir. Ruang YZ hanya berisi dua huruf.',
+      'Tertukar dengan Sandi Kotak 1 yang hanya memakai satu titik untuk huruf kedua.',
     ],
   ),
   'kotak_koordinat': Lesson(
