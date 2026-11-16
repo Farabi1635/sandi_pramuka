@@ -1,9 +1,12 @@
 import '../../services/ciphers/braille_cipher.dart';
 import '../../services/ciphers/cipher.dart';
 import '../../services/ciphers/jam_cipher.dart';
+import '../../services/ciphers/kimia_cipher.dart';
 import '../../services/ciphers/letter_ciphers.dart';
 import '../../services/ciphers/morse_cipher.dart';
+import '../../services/ciphers/rumput_cipher.dart';
 import '../../services/ciphers/semaphore_cipher.dart';
+import '../../services/ciphers/sungai_cipher.dart';
 
 /// Susunan kotak 5x5 untuk Sandi Kotak Koordinat (I = J).
 const String kotakGrid = 'ABCDEFGHIKLMNOPQRSTUVWXYZ';
@@ -72,6 +75,15 @@ List<MapEntry<String, String>> symbolEntries(String cipherId) {
     case 'jam':
       return [
         for (var i = 0; i < 26; i++) MapEntry(_letters[i], jamTimeOf(i)),
+      ];
+    case 'kimia':
+      return kimiaCodes.entries.toList();
+    case 'rumput':
+      return rumputCodes.entries.toList();
+    case 'sungai':
+      return [
+        for (var i = 0; i < 26; i++)
+          MapEntry(_letters[i], sungaiPairs[_letters[i]]!),
       ];
     default:
       return const [];
@@ -300,6 +312,80 @@ const Map<String, Lesson> lessons = {
       'Menulis 03.60, padahal setelah 03.55 jamnya naik menjadi 04.00.',
       'Salah menghitung huruf M: M = 04.00, bukan 03.60.',
       'Memakai jam di luar 03.00 sampai 05.05, karena sandi ini hanya memakai rentang itu.',
+    ],
+  ),
+  'kimia': Lesson(
+    definition:
+        'Sandi Kimia mengganti setiap huruf, angka, dan beberapa tanda baca '
+        'dengan rumus yang tersusun dari lambang H, O, N, S, dan A, misalnya '
+        'A = OH dan G = H2O. Angka kecil di belakang lambang menyatakan jumlah '
+        'pengulangan.',
+    purpose: 'Latihan sandi pengganti yang tampak seperti rumus kimia '
+        'sehingga pesannya tersamar.',
+    steps: [
+      'Cari huruf atau angkanya di tabel, lalu tulis rumusnya.',
+      'Pisahkan rumus tiap huruf dengan spasi dan kata dengan tanda "/".',
+      'Angka di belakang lambang berarti diulang: HO3 dibaca H, O, O, O.',
+      'Rahasia pola: setiap rumus sebenarnya kode Morse yang disamarkan. Lambang O dan A mewakili titik, sedangkan H, S, dan N mewakili garis. Contoh: G (garis, garis, titik) = H2O = H, H, O.',
+      'Tabel ini berasal dari gambar bahan materi. Regu lain bisa memakai tabel yang berbeda, jadi sepakati dulu sebelum dipakai.',
+    ],
+    tableCaption: 'Huruf, angka, dan tanda baca beserta rumusnya (Ä, Ö, dan Ch belum didukung).',
+    examples: [
+      LessonExample('SIAGA'),
+      LessonExample('PRAMUKA'),
+    ],
+    mistakes: [
+      'Membaca O3 sebagai "O dan 3". Maksudnya O diulang tiga kali (OOO).',
+      'Tidak memberi spasi antarrumus sehingga sulit dipisahkan.',
+      'Mengira H, O, N, S, A sebagai unsur kimia sungguhan. Di sini semuanya hanya lambang kode.',
+    ],
+  ),
+  'rumput': Lesson(
+    definition:
+        'Sandi Rumput menuliskan huruf sebagai garis bergelombang seperti '
+        'rumput. Ada dua jenis puncak: puncak kecil dan puncak tinggi.',
+    purpose: 'Latihan sandi bergambar yang mengajarkan pola dua jenis tanda '
+        'dengan bentuk yang berbeda.',
+    steps: [
+      'Setiap huruf adalah deretan puncak yang dibaca dari kiri ke kanan.',
+      'Puncak kecil sama dengan titik pada Morse, puncak tinggi sama dengan garis.',
+      'Contoh: A = puncak kecil lalu puncak tinggi (sama dengan .- pada Morse).',
+      'Saat menulis dengan huruf: puncak kecil ditulis k dan puncak tinggi ditulis B, jadi A = kB. Pisahkan huruf dengan spasi dan kata dengan "/".',
+    ],
+    tableCaption: 'Gambar rumput tiap huruf beserta kodenya (k = puncak kecil, B = puncak tinggi).',
+    examples: [
+      LessonExample('SIAGA'),
+      LessonExample('PRAMUKA'),
+    ],
+    mistakes: [
+      'Tertukar puncak kecil dan puncak tinggi.',
+      'Salah menghitung jumlah puncak kecil, misalnya S = 3 puncak kecil dan H = 4 puncak kecil.',
+      'Angka belum didukung di aplikasi ini.',
+    ],
+  ),
+  'sungai': Lesson(
+    definition:
+        'Sandi Sungai memakai kotak 5 baris dan 8 kolom. Huruf diletakkan '
+        'mengelilingi kotak, dimulai dari kata SUNGAI. Setiap huruf diganti '
+        'dengan huruf yang berada di seberangnya.',
+    purpose: 'Latihan sandi pengganti huruf yang memakai gambar kotak dan '
+        'pasangan huruf yang saling berhadapan.',
+    steps: [
+      'Tulis SUNGAI di baris atas, lalu lanjutkan dengan huruf abjad yang belum dipakai: B dan C.',
+      'Lanjutkan mengelilingi kotak searah jarum jam: sisi kanan D, E, F, H, J (atas ke bawah), sisi bawah K, L, M, O, P, Q, R, T (kanan ke kiri), lalu sisi kiri V, W, X, Y, Z (bawah ke atas).',
+      'Untuk menyandi, tarik garis lurus dari hurufmu ke huruf di seberangnya. Contoh: S di atas berpasangan dengan T di bawah, dan E di kanan berpasangan dengan Y di kiri.',
+      'Pasangannya timbal balik, jadi membaca sandi memakai aturan yang sama.',
+    ],
+    tableCaption: 'Kotak Sungai dan pasangan hurufnya (berlaku dua arah).',
+    examples: [
+      LessonExample('STELLA MARIS JAYA'),
+      LessonExample('BERTANGGUNGJAWAB'),
+      LessonExample('SIAGA'),
+    ],
+    mistakes: [
+      'Salah arah mengelilingi kotak sehingga urutan huruf tertukar.',
+      'Lupa melewati huruf yang sudah dipakai pada kata SUNGAI.',
+      'Menarik pasangan dari huruf di sisi yang sama, padahal harus dari sisi seberang.',
     ],
   ),
   'kotak_koordinat': Lesson(
