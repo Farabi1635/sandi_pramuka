@@ -2,6 +2,8 @@ import 'ciphers/braille_cipher.dart';
 import 'ciphers/cipher.dart';
 import 'ciphers/jam_cipher.dart';
 import 'ciphers/kimia_cipher.dart';
+import 'ciphers/koordinat_cipher.dart';
+import 'ciphers/kotak_cipher.dart';
 import 'ciphers/letter_ciphers.dart';
 import 'ciphers/morse_cipher.dart';
 import 'ciphers/number_ciphers.dart';
@@ -10,7 +12,7 @@ import 'ciphers/semaphore_cipher.dart';
 import 'ciphers/sungai_cipher.dart';
 
 /// Daftar sandi yang sudah punya mesin penerjemah.
-/// Sandi lain (Kotak 1-3, Koordinat, Gambar) menyusul.
+/// Sandi lain (Kotak 3, Gambar) menyusul.
 const List<Cipher> translatableCiphers = [
   MorseCipher(),
   SemaphoreCipher(),
@@ -25,6 +27,9 @@ const List<Cipher> translatableCiphers = [
   KimiaCipher(),
   RumputCipher(),
   SungaiCipher(),
+  KoordinatCipher(),
+  Kotak1Cipher(),
+  Kotak2Cipher(),
 ];
 
 Cipher? cipherById(String id) {
