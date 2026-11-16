@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'braille_cell.dart';
+import 'kotak_cell.dart';
 import 'rumput_cell.dart';
 import 'semaphore_cell.dart';
 
@@ -45,6 +46,9 @@ Widget cipherSymbolWidget(String cipherId, MapEntry<String, String> e) {
       return SemaphoreCell(letter: e.key, code: e.value);
     case 'rumput':
       return RumputCell(letter: e.key, code: e.value);
+    case 'kotak1':
+    case 'kotak2':
+      return KotakCell(letter: e.key, code: e.value);
     default:
       return SymbolTile(top: e.key, bottom: e.value);
   }
