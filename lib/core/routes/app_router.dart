@@ -15,6 +15,7 @@ import '../../features/onboarding/onboarding_page.dart';
 import '../../features/learning/cipher_detail_page.dart';
 import '../../features/learning/learning_page.dart';
 import '../../features/profile/profile_page.dart';
+import '../../features/semaphore/semaphore_page.dart';
 import '../../features/settings/settings_page.dart';
 import '../../features/splash/splash_page.dart';
 import '../../features/translator/translator_page.dart';
@@ -75,6 +76,10 @@ final GoRouter appRouter = GoRouter(
               GoRoute(
                 path: 'morse',
                 builder: (_, __) => const MorsePage(),
+              ),
+              GoRoute(
+                path: 'semaphore',
+                builder: (_, __) => const SemaphorePage(),
               ),
             ],
           ),
