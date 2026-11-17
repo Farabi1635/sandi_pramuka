@@ -73,6 +73,18 @@ class _ExercisesPageState extends ConsumerState<ExercisesPage> {
           Card(
             elevation: 0,
             child: ListTile(
+              leading: const CipherLogo(cipherId: 'semaphore', size: 44),
+              title: const Text('Semaphore Interaktif'),
+              subtitle: const Text(
+                  'Lihat gerakan lengan, animasi kata, dan tebak huruf.'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.go('/exercises/semaphore'),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Card(
+            elevation: 0,
+            child: ListTile(
               leading: const Icon(Icons.flag, size: 36),
               title: const Text('Tantangan'),
               subtitle: const Text(
