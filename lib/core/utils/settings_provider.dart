@@ -43,3 +43,62 @@ class TextScaleNotifier extends Notifier<double> {
 
 final textScaleProvider =
     NotifierProvider<TextScaleNotifier, double>(TextScaleNotifier.new);
+
+const double morseWpmMin = 5;
+const double morseWpmMax = 25;
+const double morseWpmDefault = 12;
+const double morseFreqMin = 400;
+const double morseFreqMax = 1000;
+const double morseFreqDefault = 600;
+
+/// Kecepatan Morse bawaan (kata per menit).
+class MorseWpmNotifier extends Notifier<double> {
+  static const _key = 'morse_wpm';
+
+  @override
+  double build() =>
+      (ref.read(sharedPrefsProvider).getDouble(_key) ?? morseWpmDefault)
+          .clamp(morseWpmMin, morseWpmMax);
+
+  Future<void> set(double value) async {
+    state = value.clamp(morseWpmMin, morseWpmMax);
+    await ref.read(sharedPrefsProvider).setDouble(_key, state);
+  }
+}
+
+final morseWpmProvider =
+    NotifierProvider<MorseWpmNotifier, double>(MorseWpmNotifier.new);
+
+/// Nada Morse bawaan (Hz).
+class MorseFreqNotifier extends Notifier<double> {
+  static const _key = 'morse_freq';
+
+  @override
+  double build() =>
+      (ref.read(sharedPrefsProvider).getDouble(_key) ?? morseFreqDefault)
+          .clamp(morseFreqMin, morseFreqMax);
+
+  Future<void> set(double value) async {
+    state = value.clamp(morseFreqMin, morseFreqMax);
+    await ref.read(sharedPrefsProvider).setDouble(_key, state);
+  }
+}
+
+final morseFreqProvider =
+    NotifierProvider<MorseFreqNotifier, double>(MorseFreqNotifier.new);
+
+/// Bunyi Morse hidup atau mati. Jika mati, hanya lampu yang berkedip.
+class SoundEnabledNotifier extends Notifier<bool> {
+  static const _key = 'sound_enabled';
+
+  @override
+  bool build() => ref.read(sharedPrefsProvider).getBool(_key) ?? true;
+
+  Future<void> set(bool value) async {
+    state = value;
+    await ref.read(sharedPrefsProvider).setBool(_key, value);
+  }
+}
+
+final soundEnabledProvider =
+    NotifierProvider<SoundEnabledNotifier, bool>(SoundEnabledNotifier.new);
