@@ -60,6 +60,9 @@ class SettingsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final mode = ref.watch(themeModeProvider);
     final scale = ref.watch(textScaleProvider);
+    final sound = ref.watch(soundEnabledProvider);
+    final wpm = ref.watch(morseWpmProvider);
+    final freq = ref.watch(morseFreqProvider);
     return Scaffold(
       appBar: AppBar(title: const Text('Pengaturan')),
       body: ListView(
@@ -90,6 +93,43 @@ class SettingsPage extends ConsumerWidget {
                 .set(double.parse(v.toStringAsFixed(1))),
           ),
           const SizedBox(height: 16),
+          const Divider(),
+          Text('Suara dan Morse',
+              style: Theme.of(context).textTheme.titleMedium),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: const Text('Bunyi Morse'),
+            subtitle: const Text(
+                'Matikan untuk latihan senyap: hanya lampu yang berkedip.'),
+            value: sound,
+            onChanged: (v) => ref.read(soundEnabledProvider.notifier).set(v),
+          ),
+          Text('Kecepatan Morse bawaan: ${wpm.round()} WPM',
+              style: Theme.of(context).textTheme.titleSmall),
+          Slider(
+            value: wpm,
+            min: morseWpmMin,
+            max: morseWpmMax,
+            divisions: 20,
+            label: '${wpm.round()}',
+            onChanged: (v) => ref.read(morseWpmProvider.notifier).set(v),
+          ),
+          Text('Nada Morse bawaan: ${freq.round()} Hz',
+              style: Theme.of(context).textTheme.titleSmall),
+          Slider(
+            value: freq,
+            min: morseFreqMin,
+            max: morseFreqMax,
+            divisions: 12,
+            label: '${freq.round()}',
+            onChanged: (v) => ref.read(morseFreqProvider.notifier).set(v),
+          ),
+          const ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: Icon(Icons.language),
+            title: Text('Bahasa aplikasi'),
+            subtitle: Text('Indonesia (satu-satunya bahasa saat ini)'),
+          ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.backup),
