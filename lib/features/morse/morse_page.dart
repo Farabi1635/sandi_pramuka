@@ -3,21 +3,23 @@ import 'dart:math';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/utils/settings_provider.dart';
 import '../../services/audio_service.dart';
 import '../../services/ciphers/cipher.dart';
 import '../../services/ciphers/morse_cipher.dart';
 import '../exercises/quiz_engine.dart';
 
-class MorsePage extends StatefulWidget {
+class MorsePage extends ConsumerStatefulWidget {
   const MorsePage({super.key});
 
   @override
-  State<MorsePage> createState() => _MorsePageState();
+  ConsumerState<MorsePage> createState() => _MorsePageState();
 }
 
-class _MorsePageState extends State<MorsePage> {
+class _MorsePageState extends ConsumerState<MorsePage> {
   static const MorseCipher _cipher = MorseCipher();
 
   final AudioPlayer _player = AudioPlayer();
@@ -29,13 +31,21 @@ class _MorsePageState extends State<MorsePage> {
   Timer? _ticker;
   List<MorseSegment> _segments = const [];
   int _total = 0;
-  double _wpm = 12;
-  double _freq = 600;
+  late double _wpm;
+  late double _freq;
+  bool _audible = true;
   bool _playing = false;
   bool _paused = false;
   bool _lampOn = false;
   String? _target;
   String? _feedback;
+
+  @override
+  void initState() {
+    super.initState();
+    _wpm = ref.read(morseWpmProvider);
+    _freq = ref.read(morseFreqProvider);
+  }
 
   @override
   void dispose() {
@@ -58,7 +68,8 @@ class _MorsePageState extends State<MorsePage> {
       _playing = true;
       _paused = false;
     });
-    await _player.play(BytesSource(bytes));
+    _audible = ref.read(soundEnabledProvider);
+    if (_audible) await _player.play(BytesSource(bytes));
     if (!mounted || !_playing) return;
     _watch
       ..reset()
@@ -93,13 +104,13 @@ class _MorsePageState extends State<MorsePage> {
   }
 
   Future<void> _pause() async {
-    await _player.pause();
+    if (_audible) await _player.pause();
     _watch.stop();
     if (mounted) setState(() => _paused = true);
   }
 
   Future<void> _resume() async {
-    await _player.resume();
+    if (_audible) await _player.resume();
     _watch.start();
     if (mounted) setState(() => _paused = false);
   }
@@ -226,6 +237,22 @@ class _MorsePageState extends State<MorsePage> {
             ],
           ),
           const SizedBox(height: 16),
+          if (!ref.watch(soundEnabledProvider))
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Row(
+                children: [
+                  const Icon(Icons.volume_off, size: 18),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Mode senyap: bunyi dimatikan di Pengaturan, hanya lampu yang berkedip.',
+                      style: t.textTheme.bodySmall,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           Text('Kecepatan: ${_wpm.round()} WPM', style: t.textTheme.titleSmall),
           Text(
             'Titik $dotMs ms, garis ${dotMs * 3} ms, jeda huruf ${dotMs * 3} ms, jeda kata ${dotMs * 7} ms',
@@ -238,6 +265,7 @@ class _MorsePageState extends State<MorsePage> {
             divisions: 20,
             label: '${_wpm.round()}',
             onChanged: _playing ? null : (v) => setState(() => _wpm = v),
+            onChangeEnd: (v) => ref.read(morseWpmProvider.notifier).set(v),
           ),
           Text('Nada: ${_freq.round()} Hz', style: t.textTheme.titleSmall),
           Slider(
@@ -247,6 +275,7 @@ class _MorsePageState extends State<MorsePage> {
             divisions: 12,
             label: '${_freq.round()}',
             onChanged: _playing ? null : (v) => setState(() => _freq = v),
+            onChangeEnd: (v) => ref.read(morseFreqProvider.notifier).set(v),
           ),
           const Divider(height: 32),
           Text('Latihan mendengar', style: t.textTheme.titleMedium),
