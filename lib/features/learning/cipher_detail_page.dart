@@ -10,6 +10,7 @@ import '../../shared/widgets/cipher_logo.dart';
 import '../../shared/widgets/cipher_symbol.dart';
 import '../../shared/widgets/coming_soon_view.dart';
 import '../../shared/widgets/koordinat_grid.dart';
+import '../../shared/widgets/kotak3_cell.dart';
 import '../../shared/widgets/kotak_cell.dart';
 import '../../shared/widgets/sungai_grid.dart';
 import 'learning_page.dart';
@@ -125,6 +126,10 @@ class CipherDetailPage extends ConsumerWidget {
                         ],
                         if (cipherId == 'kotak1' || cipherId == 'kotak2') ...[
                           KotakGuide(kind: cipherId == 'kotak1' ? 1 : 2),
+                          const SizedBox(height: 12),
+                        ],
+                        if (cipherId == 'kotak3') ...[
+                          const Kotak3Diagram(),
                           const SizedBox(height: 12),
                         ],
                         if (cipherId == 'koordinat') ...[
