@@ -28,6 +28,7 @@ const Set<String> codeCipherIds = {
   'koordinat',
   'kotak1',
   'kotak2',
+  'kotak3',
 };
 
 /// Sandi pengganti huruf (karakter selain A-Z dibiarkan apa adanya).
