@@ -10,6 +10,7 @@ const Set<String> visualCipherIds = {
   'rumput',
   'kotak1',
   'kotak2',
+  'kotak3',
 };
 
 /// Menampilkan gambar simbol untuk setiap huruf pada [plainText],
