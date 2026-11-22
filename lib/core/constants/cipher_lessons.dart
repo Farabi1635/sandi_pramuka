@@ -3,6 +3,7 @@ import '../../services/ciphers/cipher.dart';
 import '../../services/ciphers/jam_cipher.dart';
 import '../../services/ciphers/kimia_cipher.dart';
 import '../../services/ciphers/koordinat_cipher.dart';
+import '../../services/ciphers/kotak3_cipher.dart';
 import '../../services/ciphers/kotak_cipher.dart';
 import '../../services/ciphers/letter_ciphers.dart';
 import '../../services/ciphers/morse_cipher.dart';
@@ -101,6 +102,11 @@ List<MapEntry<String, String>> symbolEntries(String cipherId) {
       return [
         for (var i = 0; i < 26; i++)
           MapEntry(_letters[i], kotak2Codes[_letters[i]]!),
+      ];
+    case 'kotak3':
+      return [
+        for (var i = 0; i < 26; i++)
+          MapEntry(_letters[i], kotak3Codes[_letters[i]]!),
       ];
     default:
       return const [];
@@ -480,6 +486,32 @@ const Map<String, Lesson> lessons = {
       'Salah menghitung titik: huruf pertama 0 titik, kedua 1 titik, ketiga 2 titik.',
       'Menambahkan titik kedua pada ruang terakhir. Ruang YZ hanya berisi dua huruf.',
       'Tertukar dengan Sandi Kotak 1 yang hanya memakai satu titik untuk huruf kedua.',
+    ],
+  ),
+  'kotak3': Lesson(
+    definition:
+        'Sandi Kotak 3 memakai gambar tanda pagar (#) yang ditumpuk dengan '
+        'belah ketupat sehingga membentuk 26 ruang. Setiap huruf diganti garis '
+        'yang membatasi ruangnya. Huruf bertitik membedakan dua ruang yang '
+        'bentuk garisnya sama.',
+    purpose: 'Latihan sandi bergambar yang paling rumit di antara sandi kotak.',
+    steps: [
+      'Gambar persegi panjang di tengah dengan dua garis tegak dan dua garis datar yang menembus tepinya (tanda pagar).',
+      'Gambar belah ketupat yang sisinya melewati keempat sudut persegi tengah, dengan ujung atas, kanan, bawah, dan kiri di luar persegi.',
+      'Isi ruang dengan huruf seperti pada gambar kunci: A dan B di tengah, lima huruf di sekitar tiap sudut persegi, dan F, L, R, X di ujung belah ketupat.',
+      'Tiap huruf diganti garis yang membatasi ruangnya: kotak penuh untuk ruang tengah (A, B), dua garis dari satu sudut untuk ruang sudut, dan dua garis miring untuk ujung belah ketupat (F, L, R, X).',
+      'Delapan pasang ruang punya bentuk garis yang sama (misalnya E dan N). Salah satunya diberi titik: B, D, H, J, N, P, T, V, dan Z.',
+      'Saat menulis dengan huruf: bentuk dinomori K1 sampai K17 (lihat tabel), titik ditulis "." di belakang, misalnya A = K1 dan B = K1.',
+    ],
+    tableCaption: 'Gambar kunci (huruf dan titik di tiap ruang) dan simbol tiap huruf.',
+    examples: [
+      LessonExample('SIAGA'),
+      LessonExample('PRAMUKA'),
+    ],
+    mistakes: [
+      'Lupa menambahkan titik pada huruf yang bertitik.',
+      'Tertukar dua ruang yang bentuk garisnya sama, misalnya E (tanpa titik) dan N (bertitik).',
+      'Gambar acuan beresolusi rendah. Susunan huruf dan titik di aplikasi ini disimpulkan dari gambar kunci dan diperiksa dengan aturan titiknya. Jika regumu memakai gambar yang berbeda, sepakati dulu.',
     ],
   ),
   'kotak_koordinat': Lesson(
